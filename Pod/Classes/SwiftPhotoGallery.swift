@@ -64,8 +64,10 @@ public class SwiftPhotoGallery: UIViewController {
         set(page) {
             if page < numberOfImages {
                 scrollToImage(withIndex: page, animated: false)
+                imageCollectionView.contentOffset.x = self.view.bounds.width * CGFloat(page)
             } else {
                 scrollToImage(withIndex: numberOfImages - 1, animated: false)
+                imageCollectionView.contentOffset.x = self.view.bounds.width * CGFloat(numberOfImages - 1)
             }
             updatePageControl()
         }
@@ -232,7 +234,8 @@ public class SwiftPhotoGallery: UIViewController {
         let yFromCenter = image.center.y - self.view.bounds.midY
 
         let alpha = 1 - abs(yFromCenter / self.view.bounds.midY)
-        self.view.backgroundColor = backgroundColor.withAlphaComponent(alpha)
+        self.imageCollectionView.alpha = alpha
+        self.pageControl.alpha = alpha
 
         if gesture.state == UIGestureRecognizerState.ended {
 
