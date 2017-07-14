@@ -92,7 +92,10 @@ public class SwiftPhotoGallery: UIViewController {
     #endif
 
     public var isSwipeToDismissEnabled: Bool = true
-
+    public var visibleCloseButton: Bool = true
+    public var closeButtonImage: UIImage = icon_close
+    
+    private var closeButton: UIButton?
     private var pageBeforeRotation: Int = 0
     private var currentIndexPath: IndexPath = IndexPath(item: 0, section: 0)
     private var flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -100,6 +103,7 @@ public class SwiftPhotoGallery: UIViewController {
     private var pageControlBottomConstraint: NSLayoutConstraint?
     private var pageControlCenterXConstraint: NSLayoutConstraint?
     private var needsLayout = true
+    
 
     // MARK: Public Interface
     public init(delegate: SwiftPhotoGalleryDelegate, dataSource: SwiftPhotoGalleryDataSource) {
@@ -165,6 +169,15 @@ public class SwiftPhotoGallery: UIViewController {
 
         setupPageControl()
         setupGestureRecognizers()
+        
+        if visibleCloseButton {
+            closeButton = UIButton(frame: CGRect.zero)
+            closeButton!.setImage(closeButtonImage, for: .normal)
+            closeButton!.addTarget(self, action: #selector(closeButtonDidTap(_:)), for: .touchUpInside)
+            closeButton!.imageView?.contentMode = UIViewContentMode.center
+            view.addSubview(closeButton!)
+            layoutCloseButton()
+        }
     }
 
     #if os(iOS)
@@ -258,15 +271,6 @@ public class SwiftPhotoGallery: UIViewController {
             }
     
             self.delegate?.galleryDidTapToClose(gallery: self)
-
-//            if animateImageAway {
-//                UIView.animate(withDuration: 0.35, animations: {
-//                    self.view.alpha = 0
-//                    image.center = CGPoint(x: self.view.bounds.midX, y: swipeDistance)
-//                }, completion: { (complete) in
-//                    self.delegate?.galleryDidTapToClose(gallery: self)
-//                })
-//            }
         }
     }
     #endif
@@ -378,6 +382,16 @@ public class SwiftPhotoGallery: UIViewController {
     fileprivate func getImage(currentPage: Int) -> UIImage {
         let imageForPage = dataSource?.imageInGallery(gallery: self, forIndex: currentPage)
         return imageForPage!
+    }
+    
+    func layoutCloseButton() {
+        closeButton!.translatesAutoresizingMaskIntoConstraints = false
+        
+        let views: [String: UIView] = ["closeButton": closeButton!]
+        let constraintVertical   = NSLayoutConstraint.constraints(withVisualFormat: "V:|[closeButton(100)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views)
+        let constraintHorizontal = NSLayoutConstraint.constraints(withVisualFormat: "H:[closeButton(52)]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views)
+        view.addConstraints(constraintVertical)
+        view.addConstraints(constraintHorizontal)
     }
 
 }
