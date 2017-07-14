@@ -256,15 +256,17 @@ public class SwiftPhotoGallery: UIViewController {
                 swipeDistance = self.view.bounds.height
                 animateImageAway = true
             }
+    
+            self.delegate?.galleryDidTapToClose(gallery: self)
 
-            if animateImageAway {
-                UIView.animate(withDuration: 0.35, animations: {
-                    self.view.alpha = 0
-                    image.center = CGPoint(x: self.view.bounds.midX, y: swipeDistance)
-                }, completion: { (complete) in
-                    self.delegate?.galleryDidTapToClose(gallery: self)
-                })
-            }
+//            if animateImageAway {
+//                UIView.animate(withDuration: 0.35, animations: {
+//                    self.view.alpha = 0
+//                    image.center = CGPoint(x: self.view.bounds.midX, y: swipeDistance)
+//                }, completion: { (complete) in
+//                    self.delegate?.galleryDidTapToClose(gallery: self)
+//                })
+//            }
         }
     }
     #endif
