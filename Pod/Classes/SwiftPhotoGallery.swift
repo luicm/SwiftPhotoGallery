@@ -93,7 +93,7 @@ public class SwiftPhotoGallery: UIViewController {
 
     public var isSwipeToDismissEnabled: Bool = true
     public var visibleCloseButton: Bool = true
-    public var closeButtonImage: UIImage = icon_close
+    public var closeButtonImage: UIImage = #imageLiteral(resourceName: "icon_close.pdf")
     
     private var closeButton: UIButton?
     private var pageBeforeRotation: Int = 0
