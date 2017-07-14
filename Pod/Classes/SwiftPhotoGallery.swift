@@ -273,8 +273,13 @@ public class SwiftPhotoGallery: UIViewController {
             self.delegate?.galleryDidTapToClose(gallery: self)
         }
     }
+    
     #endif
 
+    func closeButtonDidTap(_ sender: UIButton) {
+        self.delegate?.galleryDidTapToClose(gallery: self)
+    }
+    
     public func singleTapAction(recognizer: UITapGestureRecognizer) {
         delegate?.galleryDidTapToClose(gallery: self)
     }
