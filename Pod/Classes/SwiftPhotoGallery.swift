@@ -198,7 +198,7 @@ public class SwiftPhotoGallery: UIViewController {
     #if os(iOS)
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         get {
-            return .allButUpsideDown
+            return .all
         }
     }
     #endif
