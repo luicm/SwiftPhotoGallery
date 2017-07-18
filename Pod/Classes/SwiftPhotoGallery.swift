@@ -8,11 +8,12 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
-@objc public protocol SwiftPhotoGalleryDataSource {
-    func numberOfImagesInGallery(gallery:SwiftPhotoGallery) -> Int
-    func imageInGallery(gallery:SwiftPhotoGallery, forIndex:Int) -> UIImage?
-}
+//@objc public protocol SwiftPhotoGalleryDataSource {
+//    func numberOfImagesInGallery(gallery:SwiftPhotoGallery) -> Int
+//    func imageInGallery(gallery:SwiftPhotoGallery, forIndex:Int) -> UIImage?
+//}
 
 @objc public protocol SwiftPhotoGalleryDelegate {
     func galleryDidTapToClose(gallery:SwiftPhotoGallery)
@@ -94,6 +95,8 @@ public class SwiftPhotoGallery: UIViewController {
     public var isSwipeToDismissEnabled: Bool = true
     public var visibleCloseButton: Bool = true
     public var closeButtonImage: UIImage = #imageLiteral(resourceName: "icon_close.pdf")
+    public var images: [UIImage]?
+    public var resources: [URL]?
     
     private var closeButton: UIButton?
     private var pageBeforeRotation: Int = 0
@@ -409,12 +412,28 @@ extension SwiftPhotoGallery: UICollectionViewDataSource {
     }
 
     public func collectionView(_ imageCollectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource?.numberOfImagesInGallery(gallery: self) ?? 0
+        if let images = images  {
+            return images.count
+        } else if let resources = resources {
+            return resources.count
+        } else {
+            return 0
+        }
+        
     }
 
     public func collectionView(_ imageCollectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = imageCollectionView.dequeueReusableCell(withReuseIdentifier: "SwiftPhotoGalleryCell", for: indexPath) as! SwiftPhotoGalleryCell
-        cell.image = getImage(currentPage: indexPath.row)
+        
+        if let images = images  {
+            cell.image = images[indexPath.row]
+            
+        } else if let resources = resources {
+            ImageDownloader.default.downloadImage(with: url, options: [], progressBlock: nil) {
+                (image, error, url, data) in
+                cell.image = image
+            }
+        }
         return cell
     }
 }
