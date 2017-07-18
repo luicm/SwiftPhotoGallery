@@ -15,7 +15,7 @@ public class SwiftPhotoGalleryCell: UICollectionViewCell {
     }
 
     private var scrollView: UIScrollView
-    fileprivate let imageView: UIImageView
+    let imageView: UIImageView
 
     override init(frame: CGRect) {
 
@@ -99,8 +99,8 @@ public class SwiftPhotoGalleryCell: UICollectionViewCell {
         scrollView.addConstraints(imageViewConstraints)
 
         scrollView.delegate = self
-
         setupGestureRecognizer()
+        setZoomScale()
     }
 
     required public init?(coder aDecoder: NSCoder) {

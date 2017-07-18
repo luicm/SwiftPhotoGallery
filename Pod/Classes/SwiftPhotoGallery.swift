@@ -10,10 +10,6 @@ import Foundation
 import UIKit
 import Kingfisher
 
-//@objc public protocol SwiftPhotoGalleryDataSource {
-//    func numberOfImagesInGallery(gallery:SwiftPhotoGallery) -> Int
-//    func imageInGallery(gallery:SwiftPhotoGallery, forIndex:Int) -> UIImage?
-//}
 
 @objc public protocol SwiftPhotoGalleryDelegate {
     func galleryDidTapToClose(gallery:SwiftPhotoGallery)
@@ -23,7 +19,6 @@ import Kingfisher
 
 public class SwiftPhotoGallery: UIViewController {
 
-    public weak var dataSource: SwiftPhotoGalleryDataSource?
     public weak var delegate: SwiftPhotoGalleryDelegate?
 
     public lazy var imageCollectionView: UICollectionView = self.setupCollectionView()
@@ -109,10 +104,9 @@ public class SwiftPhotoGallery: UIViewController {
     
 
     // MARK: Public Interface
-    public init(delegate: SwiftPhotoGalleryDelegate, dataSource: SwiftPhotoGalleryDataSource) {
+    public init(delegate: SwiftPhotoGalleryDelegate) {
         super.init(nibName: nil, bundle: nil)
 
-        self.dataSource = dataSource
         self.delegate = delegate
     }
 
@@ -387,10 +381,6 @@ public class SwiftPhotoGallery: UIViewController {
         imageCollectionView.scrollToItem(at: IndexPath(item: withIndex, section: 0), at: .centeredHorizontally, animated: animated)
     }
 
-    fileprivate func getImage(currentPage: Int) -> UIImage {
-        let imageForPage = dataSource?.imageInGallery(gallery: self, forIndex: currentPage)
-        return imageForPage!
-    }
     
     func layoutCloseButton() {
         closeButton!.translatesAutoresizingMaskIntoConstraints = false
@@ -426,13 +416,10 @@ extension SwiftPhotoGallery: UICollectionViewDataSource {
         let cell = imageCollectionView.dequeueReusableCell(withReuseIdentifier: "SwiftPhotoGalleryCell", for: indexPath) as! SwiftPhotoGalleryCell
         
         if let images = images  {
-            cell.image = images[indexPath.row]
+            cell.imageView.image = images[indexPath.row]
             
         } else if let resources = resources {
-            ImageDownloader.default.downloadImage(with: url, options: [], progressBlock: nil) {
-                (image, error, url, data) in
-                cell.image = image
-            }
+            cell.imageView.kf.setImage(with: resources[indexPath.row])
         }
         return cell
     }
